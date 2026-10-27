@@ -2,7 +2,7 @@ import random
 
 abeceda_ADFGX_CZ = "ABCDEFGHIJKLMNOPQRSTUVXYZ"
 abeceda_ADFGX_EN = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
-abeceda_ADFGVX = "ABCDEFGHIJKLMNOPQRSTUVXYZ01234567890"
+abeceda_ADFGVX = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
 
 wild_cards = {
@@ -63,9 +63,10 @@ def odstran_diakritiku(text):
     return text
 
 
-def vytvor_tabulku(abeceda, n):
+def vytvor_tabulku(abeceda, n, seed):
     abeceda = list(abeceda)
-    random.shuffle(abeceda)
+    rng = random.Random(seed)
+    rng.shuffle(abeceda)
 
     tabulka = []
     i = 0
@@ -95,21 +96,21 @@ def osetri_vstup(text, n):
 
     novy_text = ""
     for znak in text:
-        if znak in wild_cards:
+        if znak in wild_cards and znak not in abeceda:
             novy_text += wild_cards[znak]
         elif znak in abeceda:
             novy_text += znak
 
     return novy_text
 
-def zasifruj(text, n, tabulka):
+def zasifruj(filtrovany_text, n, tabulka):
     if n == 5:
         t = "ADFGX"
     else:
         t = "ADFGVX"
 
-    novy_text = ""
-    for znak in text:
+    zasifrovany_text = ""
+    for znak in filtrovany_text:
         suradnice = najdi_znak(tabulka, znak)
 
         if suradnice is None:
@@ -117,17 +118,36 @@ def zasifruj(text, n, tabulka):
 
         x, y = suradnice
 
-        novy_text += t[x]
-        novy_text += t[y]
+        zasifrovany_text += t[x]
+        zasifrovany_text += t[y]
+        zasifrovany_text += " "
 
-    return novy_text
+    return zasifrovany_text
 
+def transformuj_maticu(zasifrovany_text, key):
+    text = zasifrovany_text.replace(" ", "")
 
-print(zasifruj("UTOKXMEDZERAXNAXMEDZERAXCENKAXMEDZERAXVXMEDZERAXXDEVETXXNULAXXNULAX", 5, [['P', 'Q', 'J', 'D', 'E'], ['K', 'H', 'T', 'M', 'V'], ['X', 'U', 'O', 'Z', 'Y'], ['F', 'C', 'A', 'B', 'L'], ['G', 'S', 'N', 'I', 'R']]))
+def osetri_kluc(key):
+    key = key.upper()
+    key = odstran_diakritiku(key)
 
-#print(osetri_vstup("Útok na čenka v 9_00", 5))
+    filtered_key = ""
+    for znak in key:
+        if znak in abeceda_ADFGX_CZ or znak in ("W"):
+            filtered_key += znak
 
-#print(vytvor_tabulku("ABCDEFGHIJKLMNOPQRSTUVXYZ01234567890", 6))
-#print(vytvor_tabulku("ABCDEFGHIJKLMNOPQRSTUVXYZ", 5))
+    return filtered_key
+
+seed = "42"
+n = 6
+tabulka = vytvor_tabulku(abeceda_ADFGVX, n, seed)
+print("Tabulka: ", tabulka)
+text = osetri_vstup("Útok na čenka v 9_00", n)
+print("Filtrovany text: ", text)
+zasifrovany_text = zasifruj(text, n, tabulka)
+print("Zasifrovany text: ", zasifrovany_text)
+
+#print(transformuj_maticu("FD DF FF DA FA DG AX AG FG AX XX GF FA XF GF FA DG AX AG FG AX XX GF FA GD AX XF DA GF FA DG AX AG FG AX XX GF FA DX FA DG AX AG FG AX XX GF FA FA AG AX DX AX DF FA FA XF FD GX GF FA FA XF FD GX GF FA", "BAČA"))
+#print(osetri_kluc("AB13"))
 
 
