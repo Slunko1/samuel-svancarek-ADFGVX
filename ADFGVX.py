@@ -1,5 +1,10 @@
 import random
 
+abeceda_ADFGX_CZ = "ABCDEFGHIJKLMNOPQRSTUVXYZ"
+abeceda_ADFGX_EN = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+abeceda_ADFGVX = "ABCDEFGHIJKLMNOPQRSTUVXYZ01234567890"
+
+
 wild_cards = {
     "1": "XIEDENX",
     "2": "XDVAX",
@@ -24,7 +29,7 @@ def najdi_znak(tabulka, znak):
 
 
 
-def vymen_znaky(text):
+def vymen_znaky(text, zdrojova_abeceda):
     if "W" not in zdrojova_abeceda:
         text = text.replace("W", "V")
     if "J" not in zdrojova_abeceda:
@@ -75,23 +80,52 @@ def vytvor_tabulku(abeceda, n):
 
     return tabulka
 
-def osetri_vstup(text):
+def osetri_vstup(text, n):
     text = text.upper()
     text = odstran_diakritiku(text)
-    text = vymen_znaky(text)
 
+    if n == 5:
+        abeceda = abeceda_ADFGX_CZ
+        text = vymen_znaky(text, abeceda)
+    elif n == 55:
+        abeceda = abeceda_ADFGX_EN
+        text = vymen_znaky(text, abeceda)
+    else:
+        abeceda = abeceda_ADFGVX
 
     novy_text = ""
     for znak in text:
         if znak in wild_cards:
             novy_text += wild_cards[znak]
-        elif znak in zdrojova_abeceda:
+        elif znak in abeceda:
             novy_text += znak
 
-    text = novy_text
+    return novy_text
 
-    return "dvojice"
+def zasifruj(text, n, tabulka):
+    if n == 5:
+        t = "ADFGX"
+    else:
+        t = "ADFGVX"
 
+    novy_text = ""
+    for znak in text:
+        suradnice = najdi_znak(tabulka, znak)
+
+        if suradnice is None:
+            continue
+
+        x, y = suradnice
+
+        novy_text += t[x]
+        novy_text += t[y]
+
+    return novy_text
+
+
+print(zasifruj("UTOKXMEDZERAXNAXMEDZERAXCENKAXMEDZERAXVXMEDZERAXXDEVETXXNULAXXNULAX", 5, [['P', 'Q', 'J', 'D', 'E'], ['K', 'H', 'T', 'M', 'V'], ['X', 'U', 'O', 'Z', 'Y'], ['F', 'C', 'A', 'B', 'L'], ['G', 'S', 'N', 'I', 'R']]))
+
+#print(osetri_vstup("Útok na čenka v 9_00", 5))
 
 #print(vytvor_tabulku("ABCDEFGHIJKLMNOPQRSTUVXYZ01234567890", 6))
 #print(vytvor_tabulku("ABCDEFGHIJKLMNOPQRSTUVXYZ", 5))
