@@ -126,6 +126,44 @@ def zasifruj(filtrovany_text, n, tabulka):
 
 def transformuj_maticu(zasifrovany_text, key):
     text = zasifrovany_text.replace(" ", "")
+    key = osetri_kluc(key)
+
+    if not key:
+        raise ValueError("Key must be longer than 0 characters")
+
+    pocet_stlpcov = len(key)
+
+    matica = []
+    i = 0
+
+    while i < len(text):
+        riadok = []
+
+        for j in range(pocet_stlpcov):
+            if i < len(text):
+                riadok.append(text[i])
+                i += 1
+
+        matica.append(riadok)
+
+    return vypis_maticu_po_stlpcoch(matica, pocet_stlpcov, key)
+
+def vypis_maticu_po_stlpcoch(matica, pocet_stlpcov, key):
+    print(matica)
+    zasifrovany_text = ""
+
+    #triedenie podla indexu
+    poradie = sorted(
+        range(len(key)),
+        key=lambda i: (key[i], i)
+    )
+
+    for i in poradie:
+        for j in range(len(matica)):
+            if i < len(matica[j]):
+                zasifrovany_text += matica[j][i]
+
+    return zasifrovany_text
 
 def osetri_kluc(key):
     key = key.upper()
@@ -136,16 +174,23 @@ def osetri_kluc(key):
         if znak in abeceda_ADFGX_CZ or znak in ("W"):
             filtered_key += znak
 
+
+
     return filtered_key
 
 seed = "42"
-n = 6
-tabulka = vytvor_tabulku(abeceda_ADFGVX, n, seed)
+n = 5
+text = "Útok na čenka v 9:00"
+key = "zidia"
+
+tabulka = vytvor_tabulku(abeceda_ADFGX_CZ, n, seed)
 print("Tabulka: ", tabulka)
-text = osetri_vstup("Útok na čenka v 9_00", n)
+text = osetri_vstup(text, n)
 print("Filtrovany text: ", text)
 zasifrovany_text = zasifruj(text, n, tabulka)
 print("Zasifrovany text: ", zasifrovany_text)
+
+print(transformuj_maticu(zasifrovany_text, key))
 
 #print(transformuj_maticu("FD DF FF DA FA DG AX AG FG AX XX GF FA XF GF FA DG AX AG FG AX XX GF FA GD AX XF DA GF FA DG AX AG FG AX XX GF FA DX FA DG AX AG FG AX XX GF FA FA AG AX DX AX DF FA FA XF FD GX GF FA FA XF FD GX GF FA", "BAČA"))
 #print(osetri_kluc("AB13"))
