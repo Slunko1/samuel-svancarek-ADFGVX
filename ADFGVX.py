@@ -33,6 +33,12 @@ def vymen_znaky(text, zdrojova_abeceda):
         text = text.replace("J", "I")
     return text
 
+def vycisti_text(zasifrovany_text):
+    for wild_card, cislo in wild_cards.items():
+        zasifrovany_text = zasifrovany_text.replace(cislo, wild_card)
+
+    return zasifrovany_text
+
 def odstran_diakritiku(text):
     text = text.replace("Á", "A")
     text = text.replace("Ä", "A")
@@ -191,7 +197,7 @@ def desifruj(filtrovany_text, n, tabulka):
 
 
 
-    return novy_text
+    return vycisti_text(novy_text)
 
 def napln_maticu(filtrovany_text, key):
     pocet_stlpcov = len(key)
