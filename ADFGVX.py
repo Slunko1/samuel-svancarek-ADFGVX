@@ -4,7 +4,6 @@ abeceda_ADFGX_CZ = "ABCDEFGHIJKLMNOPQRSTUVXYZ"
 abeceda_ADFGX_EN = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
 abeceda_ADFGVX = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
-
 wild_cards = {
     "1": "XIEDENX",
     "2": "XDVAX",
@@ -27,16 +26,12 @@ def najdi_znak(tabulka, znak):
 
     return None
 
-
-
 def vymen_znaky(text, zdrojova_abeceda):
     if "W" not in zdrojova_abeceda:
         text = text.replace("W", "V")
     if "J" not in zdrojova_abeceda:
         text = text.replace("J", "I")
     return text
-
-
 
 def odstran_diakritiku(text):
     text = text.replace("Á", "A")
@@ -61,7 +56,6 @@ def odstran_diakritiku(text):
     text = text.replace("Ř", "R")
 
     return text
-
 
 def vytvor_tabulku(abeceda, n, seed):
     abeceda = list(abeceda)
@@ -149,7 +143,6 @@ def transformuj_maticu(zasifrovany_text, key):
     return vypis_maticu_po_stlpcoch(matica, pocet_stlpcov, key)
 
 def vypis_maticu_po_stlpcoch(matica, pocet_stlpcov, key):
-    print(matica)
     zasifrovany_text = ""
 
     #triedenie podla indexu
@@ -174,25 +167,72 @@ def osetri_kluc(key):
         if znak in abeceda_ADFGX_CZ or znak in ("W"):
             filtered_key += znak
 
-
-
     return filtered_key
 
-seed = "42"
-n = 5
-text = "Útok na čenka v 9:00"
-key = "zidia"
+def desifruj(filtrovany_text, n, tabulka):
+    if n in (5, 55):
+        t = "ADFGX"
+    else:
+        t = "ADFGVX"
 
-tabulka = vytvor_tabulku(abeceda_ADFGX_CZ, n, seed)
-print("Tabulka: ", tabulka)
-text = osetri_vstup(text, n)
-print("Filtrovany text: ", text)
-zasifrovany_text = zasifruj(text, n, tabulka)
-print("Zasifrovany text: ", zasifrovany_text)
+    dvojice = []
+    for i in range(0, len(filtrovany_text), 2):
+        dvojice.append(filtrovany_text[i:i + 2])
 
-print(transformuj_maticu(zasifrovany_text, key))
+    novy_text = ""
+    for dvojica in dvojice:
+        x = dvojica[0]
+        y = dvojica[1]
 
-#print(transformuj_maticu("FD DF FF DA FA DG AX AG FG AX XX GF FA XF GF FA DG AX AG FG AX XX GF FA GD AX XF DA GF FA DG AX AG FG AX XX GF FA DX FA DG AX AG FG AX XX GF FA FA AG AX DX AX DF FA FA XF FD GX GF FA FA XF FD GX GF FA", "BAČA"))
-#print(osetri_kluc("AB13"))
+        x = t.index(x)
+        y = t.index(y)
+
+        novy_text += tabulka[x][y]
 
 
+
+    return novy_text
+
+def napln_maticu(filtrovany_text, key):
+    pocet_stlpcov = len(key)
+    poradie = sorted(range(len(key)),key=lambda i: (key[i], i))
+
+    pocet_riadkov = (len(filtrovany_text) + pocet_stlpcov - 1) // pocet_stlpcov
+    zvysok = len(filtrovany_text) % pocet_stlpcov
+
+    matica = []
+    for _ in range(pocet_riadkov):
+        matica.append([""] * pocet_stlpcov)
+
+    index = 0
+
+    for stlpec in poradie:
+        if zvysok > stlpec or zvysok == 0:
+            dlzka = pocet_riadkov
+        else:
+            dlzka = pocet_riadkov - 1
+
+        for riadok in range(dlzka):
+            matica[riadok][stlpec] = filtrovany_text[index]
+            index += 1
+
+    novy_text = ""
+    for riadok in matica:
+        for znak in riadok:
+            novy_text += znak
+
+    return novy_text
+
+def osetri_vstup_pre_desifrovanie(zasifrovany_text, n):
+    zasifrovany_text = zasifrovany_text.replace(" ", "")
+
+    if len(zasifrovany_text) % 2 != 0:
+        return False
+
+    for znak in zasifrovany_text:
+        if znak not in "ADFGVX" and n == 6:
+            return False
+        elif znak not in "ADFGX" and n == 5:
+            return False
+
+    return zasifrovany_text
