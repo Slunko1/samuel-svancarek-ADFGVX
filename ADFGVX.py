@@ -104,7 +104,7 @@ def osetri_vstup(text, n):
     return novy_text
 
 def zasifruj(filtrovany_text, n, tabulka):
-    if n == 5:
+    if n in (5, 55):
         t = "ADFGX"
     else:
         t = "ADFGVX"
@@ -132,7 +132,6 @@ def transformuj_maticu(zasifrovany_text, key):
         raise ValueError("Key must be longer than 0 characters")
 
     pocet_stlpcov = len(key)
-
     matica = []
     i = 0
 
@@ -146,7 +145,7 @@ def transformuj_maticu(zasifrovany_text, key):
 
         matica.append(riadok)
 
-    return vypis_maticu_po_stlpcoch(matica, pocet_stlpcov, key)
+    return vypis_maticu_po_stlpcoch(matica, key)
 
 def vypis_maticu_po_stlpcoch(matica, key):
     zasifrovany_text = ""
@@ -199,9 +198,9 @@ def ziskaj_poradie(key):
     index = list(range(len(key)))
 
     for i in range(len(index)):
-        for j in range(i + 1, len(index)):
-            if key[index[i]] > key[index[j]]:
-                index[i], index[j] = index[j], index[i]
+        for j in range(len(index) - 1 - i):
+            if key[index[j]] > key[index[j + 1]]:
+                index[j], index[j+1] = index[j+1], index[j]
 
     return index
 
@@ -236,15 +235,15 @@ def napln_maticu(filtrovany_text, key):
     return novy_text
 
 def osetri_vstup_pre_desifrovanie(zasifrovany_text, n):
-    zasifrovany_text = zasifrovany_text.replace(" ", "")
+    zasifrovany_text = "".join(zasifrovany_text.split()).upper()
 
-    if len(zasifrovany_text) % 2 != 0:
+    if len(zasifrovany_text) % 2 != 0 or len(zasifrovany_text) == 0:
         return False
 
     for znak in zasifrovany_text:
         if znak not in "ADFGVX" and n == 6:
             return False
-        elif znak not in "ADFGX" and n == 5:
+        elif znak not in "ADFGX" and n in (5, 55):
             return False
 
     return zasifrovany_text

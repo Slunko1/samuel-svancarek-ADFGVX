@@ -52,12 +52,11 @@ class UiScreen(QDialog):
     key = ADFGVX.osetri_kluc(self.textEdit_Key.toPlainText())
     seed = self.textEdit_Seed.toPlainText()
 
-    #ak je kluc prazdny nastav base case
     if len(seed) == 0:
         QMessageBox.warning(
             self,
             "Bad seed",
-            "The length of the key must be greater than 0"
+            "The seed must not be empty."
         )
         return
 
@@ -88,8 +87,8 @@ class UiScreen(QDialog):
 
       filtrovany_text = ADFGVX.osetri_vstup(plain_text, self.n)
       sifrovany_text = ADFGVX.zasifruj(filtrovany_text, self.n, tabulka)
-
       trans_text = ADFGVX.transformuj_maticu(sifrovany_text, key)
+
 
       self.textEdit_filteredText.setPlainText(filtrovany_text)
       self.textEdit_cipheredText.setPlainText(trans_text)
@@ -100,15 +99,16 @@ class UiScreen(QDialog):
       if plain_text == "":
           return
 
-      if len(plain_text) % 2 != 0:
+      filtrovany_text = ADFGVX.osetri_vstup_pre_desifrovanie(plain_text, self.n)
+
+      if not filtrovany_text:
           QMessageBox.warning(
               self,
               "Bad input",
-              "The length of the text must be even."
+              "Problem has occurred while parsing text."
           )
           return
 
-      filtrovany_text = ADFGVX.osetri_vstup_pre_desifrovanie(plain_text, self.n)
       transponovany_text = ADFGVX.napln_maticu(filtrovany_text, key)
       desifrovany_text = ADFGVX.desifruj(transponovany_text, self.n, tabulka)
 
