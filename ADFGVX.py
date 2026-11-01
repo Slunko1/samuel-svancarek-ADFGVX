@@ -148,14 +148,11 @@ def transformuj_maticu(zasifrovany_text, key):
 
     return vypis_maticu_po_stlpcoch(matica, pocet_stlpcov, key)
 
-def vypis_maticu_po_stlpcoch(matica, pocet_stlpcov, key):
+def vypis_maticu_po_stlpcoch(matica, key):
     zasifrovany_text = ""
 
     #triedenie podla indexu
-    poradie = sorted(
-        range(len(key)),
-        key=lambda i: (key[i], i)
-    )
+    poradie = ziskaj_poradie(key)
 
     for i in poradie:
         for j in range(len(matica)):
@@ -198,10 +195,19 @@ def desifruj(filtrovany_text, n, tabulka):
 
 
     return vycisti_text(novy_text)
+def ziskaj_poradie(key):
+    index = list(range(len(key)))
+
+    for i in range(len(index)):
+        for j in range(i + 1, len(index)):
+            if key[index[i]] > key[index[j]]:
+                index[i], index[j] = index[j], index[i]
+
+    return index
 
 def napln_maticu(filtrovany_text, key):
     pocet_stlpcov = len(key)
-    poradie = sorted(range(len(key)),key=lambda i: (key[i], i))
+    poradie = ziskaj_poradie(key)
 
     pocet_riadkov = (len(filtrovany_text) + pocet_stlpcov - 1) // pocet_stlpcov
     zvysok = len(filtrovany_text) % pocet_stlpcov
