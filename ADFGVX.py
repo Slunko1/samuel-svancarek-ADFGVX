@@ -18,6 +18,25 @@ wild_cards = {
     " ": "XMEDZERAX"
 }
 
+def vytvor_transpozicnu_maticu(zasifrovany_text, key):
+    text = "".join(zasifrovany_text.split())
+
+    pocet_stlpcov = len(key)
+    matica = []
+    i = 0
+
+    while i < len(text):
+        riadok = []
+
+        for j in range(pocet_stlpcov):
+            if i < len(text):
+                riadok.append(text[i])
+                i += 1
+
+        matica.append(riadok)
+
+    return matica
+
 def najdi_znak(tabulka, znak):
     for i in range(len(tabulka)):
         for j in range(len(tabulka[i])):
@@ -145,6 +164,8 @@ def transformuj_maticu(zasifrovany_text, key):
 
         matica.append(riadok)
 
+    matica = vytvor_transpozicnu_maticu(zasifrovany_text, key)
+
     return vypis_maticu_po_stlpcoch(matica, key)
 
 def vypis_maticu_po_stlpcoch(matica, key):
@@ -191,9 +212,8 @@ def desifruj(filtrovany_text, n, tabulka):
 
         novy_text += tabulka[x][y]
 
-
-
     return vycisti_text(novy_text)
+
 def ziskaj_poradie(key):
     index = list(range(len(key)))
 

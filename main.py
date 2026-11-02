@@ -48,6 +48,39 @@ class UiScreen(QDialog):
         self.zdrojova_abeceda = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
         self.n = 6
 
+  def zobraz_maticu(self, widget, matica, hlavicky=None, riadkove_hlavicky=None):
+      pocet_riadkov = len(matica)
+      pocet_stlpcov = max((len(riadok) for riadok in matica), default=0)
+
+      widget.clear()
+      widget.setRowCount(pocet_riadkov)
+      widget.setColumnCount(pocet_stlpcov)
+
+      for i in range(pocet_riadkov):
+          for j in range(pocet_stlpcov):
+              if j < len(matica[i]):
+                  hodnota = matica[i][j]
+              else:
+                  hodnota = ""
+
+              item = QTableWidgetItem(str(hodnota))
+              item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+              widget.setItem(i, j, item)
+
+      if hlavicky is not None:
+          widget.setHorizontalHeaderLabels(hlavicky)
+
+      if riadkove_hlavicky is not None:
+          widget.setVerticalHeaderLabels(riadkove_hlavicky)
+
+      widget.horizontalHeader().setSectionResizeMode(
+          QHeaderView.ResizeMode.Stretch
+      )
+
+      widget.verticalHeader().setSectionResizeMode(
+          QHeaderView.ResizeMode.Stretch
+      )
+
   def spracuj(self):
     key = ADFGVX.osetri_kluc(self.textEdit_Key.toPlainText())
     seed = self.textEdit_Seed.toPlainText()
@@ -72,12 +105,14 @@ class UiScreen(QDialog):
 
     tabulka = ADFGVX.vytvor_tabulku(self.zdrojova_abeceda, rozmer, seed)
 
-    #napln tabulku
-    #for row in range(5):
-        #for column in range(5):
-            #item = QTableWidgetItem(table[row][column])
-            #item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            #self.tableWidget.setItem(row, column, item)
+    koordinaty = "ADFGVX" if self.n == 6 else "ADFGX"
+
+    self.zobraz_maticu(
+        self.tableWidget,
+        tabulka,
+        list(koordinaty),
+        list(koordinaty)
+    )
 
     if self.radioButton_Encrypt.isChecked():
       plain_text = self.textEdit_plainText.toPlainText()
@@ -87,8 +122,16 @@ class UiScreen(QDialog):
 
       filtrovany_text = ADFGVX.osetri_vstup(plain_text, self.n)
       sifrovany_text = ADFGVX.zasifruj(filtrovany_text, self.n, tabulka)
-      trans_text = ADFGVX.transformuj_maticu(sifrovany_text, key)
 
+      matica = ADFGVX.vytvor_transpozicnu_maticu(sifrovany_text, key)
+
+      self.zobraz_maticu(
+          self.tableWidget_Transposition,
+          matica,
+          list(key)
+      )
+
+      trans_text = ADFGVX.vypis_maticu_po_stlpcoch(matica, key)
 
       self.textEdit_filteredText.setPlainText(filtrovany_text)
       self.textEdit_cipheredText.setPlainText(trans_text)

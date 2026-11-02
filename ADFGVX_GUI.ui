@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1174</width>
+    <width>1357</width>
     <height>721</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1211</width>
+     <width>1371</width>
      <height>901</height>
     </rect>
    </property>
@@ -253,7 +253,7 @@ font: 81 60pt &quot;ArcadeClassic&quot;; color:rgb(30, 32, 27);
 </string>
     </property>
     <property name="text">
-     <string>PLAYFAIR CIPHER</string>
+     <string>ADFG&lt;V&gt;X CIPHER</string>
     </property>
    </widget>
    <widget class="QWidget" name="widget_3" native="true">
@@ -354,6 +354,122 @@ color: rgb(147, 145, 122)</string>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="widget_4" native="true">
+    <property name="geometry">
+     <rect>
+      <x>950</x>
+      <y>130</y>
+      <width>381</width>
+      <height>551</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_8">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font: 24pt &quot;ArcadeClassic&quot;;
+color:rgb(30, 32, 27);</string>
+       </property>
+       <property name="text">
+        <string>TRANSPOSITION</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTableWidget" name="tableWidget_Transposition">
+       <property name="styleSheet">
+        <string notr="true">/* Celkový vzhľad tabuľky */
+QTableWidget {
+    background-color: #222220; /* Tmavá farba pozadia, rovnaká ako textové polia vľavo */
+    color: #DCDCD6; /* Svetlý text pre dobrú čitateľnosť */
+    gridline-color: #44443E; /* Decentná mriežka */
+    border: 1px solid #44443E;
+    selection-background-color: #55554B; /* Farba pri označení bunky */
+    selection-color: #FFFFFF;
+}
+
+/* Štýl pre samotné bunky */
+QTableWidget::item {
+    padding: 2px;
+}
+
+/* Hlavičky tabuľky (riadky aj stĺpce - A, D, F, G, V, X, čísla) */
+QHeaderView::section {
+    background-color: #33332E; /* O niečo svetlejší odtieň pre hlavičku */
+    color: #DCDCD6;
+    padding: 4px;
+    border: 1px solid #44443E;
+    font-weight: bold;
+}
+
+/* Rohové tlačidlo v1. v ľavom hornom rohu tabuliek */
+QTableCornerButton::section {
+    background-color: #33332E;
+    border: 1px solid #44443E;
+}</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_9">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font: 24pt &quot;ArcadeClassic&quot;;
+color:rgb(30, 32, 27);</string>
+       </property>
+       <property name="text">
+        <string>POLYBIOUS SQUARE</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTableWidget" name="tableWidget">
+       <property name="styleSheet">
+        <string notr="true">/* Celkový vzhľad tabuľky */
+QTableWidget {
+    background-color: #222220; /* Tmavá farba pozadia, rovnaká ako textové polia vľavo */
+    color: #DCDCD6; /* Svetlý text pre dobrú čitateľnosť */
+    gridline-color: #44443E; /* Decentná mriežka */
+    border: 1px solid #44443E;
+    selection-background-color: #55554B; /* Farba pri označení bunky */
+    selection-color: #FFFFFF;
+}
+
+/* Štýl pre samotné bunky */
+QTableWidget::item {
+    padding: 2px;
+}
+
+/* Hlavičky tabuľky (riadky aj stĺpce - A, D, F, G, V, X, čísla) */
+QHeaderView::section {
+    background-color: #33332E; /* O niečo svetlejší odtieň pre hlavičku */
+    color: #DCDCD6;
+    padding: 4px;
+    border: 1px solid #44443E;
+    font-weight: bold;
+}
+
+/* Rohové tlačidlo v1. v ľavom hornom rohu tabuliek */
+QTableCornerButton::section {
+    background-color: #33332E;
+    border: 1px solid #44443E;
+}</string>
        </property>
       </widget>
      </item>
