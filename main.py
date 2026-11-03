@@ -73,63 +73,68 @@ class UiScreen(QDialog):
       if riadkove_hlavicky is not None:
           widget.setVerticalHeaderLabels(riadkove_hlavicky)
 
-      widget.horizontalHeader().setSectionResizeMode(
-          QHeaderView.ResizeMode.Stretch
-      )
-
-      widget.verticalHeader().setSectionResizeMode(
-          QHeaderView.ResizeMode.Stretch
-      )
+      widget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+      widget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
   def spracuj(self):
     key = ADFGVX.osetri_kluc(self.textEdit_Key.toPlainText())
     seed = self.textEdit_Seed.toPlainText()
-
-    if len(seed) == 0:
-        QMessageBox.warning(
-            self,
-            "Bad seed",
-            "The seed must not be empty."
-        )
-        return
+    matrix = self.textEdit_MatrixInput.toPlainText()
 
     if len(key) == 0:
         QMessageBox.warning(
             self,
             "Bad key",
-            "The length of the key must be greater than 0"
+            "The key must not be empty."
         )
         return
 
-    rozmer = 6 if self.n == 6 else 5
+    if len(seed) == 0 and len(matrix) == 0:
+        QMessageBox.warning(
+            self,
+            "Bad input",
+            "The seed or matrix must not be empty."
+        )
+        return
+    else:
+        rozmer = 6 if self.n == 6 else 5
+        if len(matrix) > 0:
+            matrix = "".join(matrix.split()).upper()
 
-    tabulka = ADFGVX.vytvor_tabulku(self.zdrojova_abeceda, rozmer, seed)
+            if not ADFGVX.osetri_maticu(matrix, self.zdrojova_abeceda):
+                QMessageBox.warning(
+                    self,
+                    "Bad matrix",
+                    "The matrix must contain every character exactly once."
+                )
+                return
+
+            tabulka = ADFGVX.vytvor_tabulku_zo_stringu(matrix, rozmer)
+
+        elif len(seed) > 0:
+            tabulka = ADFGVX.vytvor_tabulku(self.zdrojova_abeceda, rozmer, seed)
 
     koordinaty = "ADFGVX" if self.n == 6 else "ADFGX"
-
-    self.zobraz_maticu(
-        self.tableWidget,
-        tabulka,
-        list(koordinaty),
-        list(koordinaty)
-    )
+    self.zobraz_maticu(self.tableWidget, tabulka, list(koordinaty), list(koordinaty))
 
     if self.radioButton_Encrypt.isChecked():
       plain_text = self.textEdit_plainText.toPlainText()
 
       if plain_text == "":
+          QMessageBox.warning(self,"Bad input","Text must not be empty.")
           return
 
       filtrovany_text = ADFGVX.osetri_vstup(plain_text, self.n)
+
+      if not filtrovany_text:
+          QMessageBox.warning(self,"Bad input","Problem has occurred while parsing text.")
+          return
+
       sifrovany_text = ADFGVX.zasifruj(filtrovany_text, self.n, tabulka)
 
       matica = ADFGVX.vytvor_transpozicnu_maticu(sifrovany_text, key)
 
-      self.zobraz_maticu(
-          self.tableWidget_Transposition,
-          matica,
-          list(key)
-      )
+      self.zobraz_maticu(self.tableWidget_Transposition,matica,list(key))
 
       trans_text = ADFGVX.vypis_maticu_po_stlpcoch(matica, key)
 
@@ -140,19 +145,21 @@ class UiScreen(QDialog):
       plain_text = self.textEdit_plainText.toPlainText()
 
       if plain_text == "":
+          QMessageBox.warning(self, "Bad input", "Text must not be empty.")
           return
 
       filtrovany_text = ADFGVX.osetri_vstup_pre_desifrovanie(plain_text, self.n)
 
       if not filtrovany_text:
-          QMessageBox.warning(
-              self,
-              "Bad input",
-              "Problem has occurred while parsing text."
-          )
+          QMessageBox.warning(self,"Bad input","Problem has occurred while parsing text.")
           return
 
       transponovany_text = ADFGVX.napln_maticu(filtrovany_text, key)
+
+      matica = ADFGVX.vytvor_transpozicnu_maticu(transponovany_text, key)
+
+      self.zobraz_maticu(self.tableWidget_Transposition, matica, list(key))
+
       desifrovany_text = ADFGVX.desifruj(transponovany_text, self.n, tabulka)
 
       self.textEdit_filteredText.setPlainText(filtrovany_text)

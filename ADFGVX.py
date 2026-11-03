@@ -86,19 +86,9 @@ def vytvor_tabulku(abeceda, n, seed):
     abeceda = list(abeceda)
     rng = random.Random(seed)
     rng.shuffle(abeceda)
+    abeceda = "".join(abeceda)
 
-    tabulka = []
-    i = 0
-
-    # naplnenie tabulky
-    for column in range(n):
-        tabulka.append([])
-
-        for row in range(n):
-            tabulka[column].append(abeceda[i])
-            i += 1
-
-    return tabulka
+    return vytvor_tabulku_zo_stringu(abeceda, n)
 
 def osetri_vstup(text, n):
     text = text.upper()
@@ -142,31 +132,6 @@ def zasifruj(filtrovany_text, n, tabulka):
         zasifrovany_text += " "
 
     return zasifrovany_text
-
-def transformuj_maticu(zasifrovany_text, key):
-    text = zasifrovany_text.replace(" ", "")
-    key = osetri_kluc(key)
-
-    if not key:
-        raise ValueError("Key must be longer than 0 characters")
-
-    pocet_stlpcov = len(key)
-    matica = []
-    i = 0
-
-    while i < len(text):
-        riadok = []
-
-        for j in range(pocet_stlpcov):
-            if i < len(text):
-                riadok.append(text[i])
-                i += 1
-
-        matica.append(riadok)
-
-    matica = vytvor_transpozicnu_maticu(zasifrovany_text, key)
-
-    return vypis_maticu_po_stlpcoch(matica, key)
 
 def vypis_maticu_po_stlpcoch(matica, key):
     zasifrovany_text = ""
@@ -267,3 +232,33 @@ def osetri_vstup_pre_desifrovanie(zasifrovany_text, n):
             return False
 
     return zasifrovany_text
+
+def osetri_maticu(matrix, zdrojova_abeceda):
+    matrix = "".join(matrix.split()).upper()
+
+    if len(matrix) != len(zdrojova_abeceda):
+        return False
+
+    if len(set(matrix)) != len(matrix):
+        return False
+
+    if set(matrix) != set(zdrojova_abeceda):
+        return False
+
+    return True
+
+def vytvor_tabulku_zo_stringu(matrix, n):
+    matrix = list(matrix)
+
+    tabulka = []
+    i = 0
+
+    # naplnenie tabulky
+    for column in range(n):
+        tabulka.append([])
+
+        for row in range(n):
+            tabulka[column].append(matrix[i])
+            i += 1
+
+    return tabulka
