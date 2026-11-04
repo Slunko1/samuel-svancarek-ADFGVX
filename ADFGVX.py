@@ -262,3 +262,8 @@ def vytvor_tabulku_zo_stringu(matrix, n):
             i += 1
 
     return tabulka
+
+def zostavajuce_znaky(matrix, abeceda):
+    pouzite = "".join(matrix.split()).upper()
+
+    return "".join(znak for znak in abeceda if znak not in pouzite)

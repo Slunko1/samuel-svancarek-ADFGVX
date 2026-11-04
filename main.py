@@ -37,6 +37,22 @@ class UiScreen(QDialog):
 
     self.nastav_abecedu()
 
+    self.textEdit_MatrixInput.textChanged.connect(
+        self.aktualizuj_zostavajuce_znaky
+    )
+
+  def aktualizuj_zostavajuce_znaky(self):
+      matrix = self.textEdit_MatrixInput.toPlainText()
+
+      zostavajuce = ADFGVX.zostavajuce_znaky(
+          matrix,
+          self.zdrojova_abeceda
+      )
+
+      self.label_RemainingCharacters.setText(
+          f"{zostavajuce}"
+      )
+
   def nastav_abecedu(self):
     if self.comboBox_Abeceda.currentText() == "ADFGX_CZ":
         self.zdrojova_abeceda = "ABCDEFGHIJKLMNOPQRSTUVXYZ"
@@ -48,9 +64,9 @@ class UiScreen(QDialog):
         self.zdrojova_abeceda = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
         self.n = 6
 
-  def zobraz_maticu(self, widget, matica, hlavicky=None, riadkove_hlavicky=None):
+  def zobraz_maticu(self, widget, matica, key=None, hlavicky=None, riadkove_hlavicky=None):
       pocet_riadkov = len(matica)
-      pocet_stlpcov = max((len(riadok) for riadok in matica), default=0)
+      pocet_stlpcov = len(key) if key is not None else max((len(riadok) for riadok in matica), default=0)
 
       widget.clear()
       widget.setRowCount(pocet_riadkov)
@@ -58,14 +74,16 @@ class UiScreen(QDialog):
 
       for i in range(pocet_riadkov):
           for j in range(pocet_stlpcov):
+              hodnota = ""
+
               if j < len(matica[i]):
                   hodnota = matica[i][j]
-              else:
-                  hodnota = ""
 
               item = QTableWidgetItem(str(hodnota))
               item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
               widget.setItem(i, j, item)
+      if key is not None:
+        hlavicky = key
 
       if hlavicky is not None:
           widget.setHorizontalHeaderLabels(hlavicky)
@@ -115,7 +133,7 @@ class UiScreen(QDialog):
             tabulka = ADFGVX.vytvor_tabulku(self.zdrojova_abeceda, rozmer, seed)
 
     koordinaty = "ADFGVX" if self.n == 6 else "ADFGX"
-    self.zobraz_maticu(self.tableWidget, tabulka, list(koordinaty), list(koordinaty))
+    self.zobraz_maticu(self.tableWidget, tabulka, None, list(koordinaty), list(koordinaty))
 
     if self.radioButton_Encrypt.isChecked():
       plain_text = self.textEdit_plainText.toPlainText()
